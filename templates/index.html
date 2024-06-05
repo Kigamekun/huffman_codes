@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Super App</title>
+</head>
+<body>
+    <h1>KTL</h1>
+    <h2>Text </h2>
+    <form action="/encode" method="post">
+        <label for="text">ENCODE:</label><br>
+        <textarea name="text" rows="4" cols="50"></textarea><br>
+        <input type="submit" value="Encode Text">
+    </form>
+    {% if encoded_text %}
+        <h3>Encoded Text:</h3>
+        <p>{{ encoded_text }}</p>
+        <h3>Codebook:</h3>
+        <ul>
+            {% for char, code in codebook.items() %}
+                <li>{{ char }}: {{ code }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Image Compression</h2>
+    <form action="/compress_image" method="post" enctype="multipart/form-data">
+        <label for="image">UPLOAD:</label><br>
+        <input type="file" name="image" accept="image/*"><br>
+        <input type="submit" value="Compress Image">
+    </form>
+    {% if compressed_image %}
+        <h3>Compressed:</h3>
+        <img src="data:image/jpeg;base64,{{ compressed_image }}" alt="Compressed Image">
+        <br>
+        <a href="{{ url_for('download_file', filename=image_name) }}">Download Image</a>
+    {% endif %}
+</body>
+</html>
