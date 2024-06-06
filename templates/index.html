@@ -2,38 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Super App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Encoder & Decoder</title>
 </head>
 <body>
-    <h1>KTL</h1>
-    <h2>Text </h2>
-    <form action="/encode" method="post">
-        <label for="text">ENCODE:</label><br>
-        <textarea name="text" rows="4" cols="50"></textarea><br>
-        <input type="submit" value="Encode Text">
-    </form>
-    {% if encoded_text %}
-        <h3>Encoded Text:</h3>
-        <p>{{ encoded_text }}</p>
-        <h3>Codebook:</h3>
-        <ul>
-            {% for char, code in codebook.items() %}
-                <li>{{ char }}: {{ code }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <h1>File Encoder & Decoder</h1>
 
-    <h2>Image Compression</h2>
-    <form action="/compress_image" method="post" enctype="multipart/form-data">
-        <label for="image">UPLOAD:</label><br>
-        <input type="file" name="image" accept="image/*"><br>
-        <input type="submit" value="Compress Image">
+    <h2>Encode File</h2>
+    <form action="/encode" method="POST" enctype="multipart/form-data">
+        <label for="encode_file">Select File to Encode:</label>
+        <input type="file" id="encode_file" name="file" accept=".txt">
+        <button type="submit">Encode</button>
     </form>
-    {% if compressed_image %}
-        <h3>Compressed:</h3>
-        <img src="data:image/jpeg;base64,{{ compressed_image }}" alt="Compressed Image">
-        <br>
-        <a href="{{ url_for('download_file', filename=image_name) }}">Download Image</a>
+
+    <br>
+    {% if encoded_file != None %}
+
+        <h3>Encoded File</h3>
+        <a href="/download{{ encoded_file }}" >Download</a>
+
     {% endif %}
+    <br>
+    
+
+    <h2>Decode File</h2>
+    <form action="/decode" method="POST" enctype="multipart/form-data">
+        <label for="decode_file">Select File to Decode:</label>
+        <input type="file" id="decode_file" name="file" accept=".bin">
+        <button type="submit">Decode</button>
+    </form>
+    <br>
+    {% if decoded_file != None %}
+
+        <h3>Decoded File</h3>
+        <a href="/download/encoded/{{ decoded_file }}" >Download</a>
+
+    {% endif %}
+    <br>
+    
 </body>
 </html>
