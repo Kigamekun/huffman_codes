@@ -4,6 +4,8 @@ from collections import Counter
 from PIL import Image
 import io
 import base64
+import json
+import csv
 
 app = Flask(__name__)
 
@@ -48,6 +50,18 @@ def huffman_encode(text):
     encoded_text = ''.join(codebook[char] for char in text)
     return codebook, encoded_text
 
+def huffman_decode(encoded_text, codebook):
+    decoded_text = ""
+    current_code = ""
+    for bit in encoded_text:
+        current_code += bit
+        for char, code in codebook.items():
+            if code == current_code:
+                decoded_text += char
+                current_code = ""
+                break
+    return decoded_text
+
 # Simple image compression (resizing)
 def compress_image(image_file, quality=20):
     image = Image.open(image_file)
@@ -61,11 +75,34 @@ def compress_image(image_file, quality=20):
 def index():
     return render_template('index.html')
 
+
 @app.route('/encode', methods=['POST'])
 def encode():
     text = request.form['text']
     codebook, encoded_text = huffman_encode(text)
+    
+    # Simpan codebook ke dalam file CSV teks
+    with open('codebook.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Character', 'Code'])
+        for char, code in codebook.items():
+            writer.writerow([char, code])
+    
+    # Simpan encoded_text sebagai data biner langsung
+    with open('encoded_text.bin', 'wb') as f:
+        f.write(encoded_text.encode())
+    
     return render_template('index.html', encoded_text=encoded_text, codebook=codebook)
+
+
+
+@app.route('/decode', methods=['POST'])
+def decode():
+    encoded_text = request.form['encoded_text']
+    codebook = request.form['codebook']
+    codebook = json.loads(codebook)
+    decoded_text = huffman_decode(encoded_text, codebook)
+    return render_template('index.html', decoded_text=decoded_text)
 
 @app.route('/compress_image', methods=['POST'])
 def compress_image_route():
