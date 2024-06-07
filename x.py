@@ -36,6 +36,7 @@ class HuffmanCoding:
 
     def frequency_alphabet(self):
         self.set_text()
+        print('INI TEXT ',self.text)
         list_alphabet = dict()
         for letter in self.text:
             if letter in list_alphabet.keys():
@@ -43,7 +44,7 @@ class HuffmanCoding:
             else:
                 list_alphabet[letter] = 1
         list_alphabet = list(zip(list_alphabet.keys(), list_alphabet.values()))
-
+        print('INI LIST ALPHABET ',list_alphabet)
         return list_alphabet
 
     def sorted_alphabet(self, list_alphabet=None):
@@ -212,6 +213,7 @@ class HuffmanCoding:
             dictionary = self.import_binary_alphabet(self.current_directory +process_filename(self.export_file)+'.txt')
             dictionary = dict(zip(dictionary.values(), dictionary.keys()))
 
+            print(dictionary)
             octet_found = False
             while not octet_found:
                 value = last_octet
@@ -226,10 +228,13 @@ class HuffmanCoding:
             encoded_text += last_octet
             print('TOLD')
             print('INII DICT 2 2 ',dictionary)
+            print('INII ENCODED ',encoded_text)
 
+            encoded_text = encoded_text[:-4]
             while encoded_text:
                 for key in dictionary:
                     if encoded_text.startswith(key):
+                        print('write',dictionary[key],key)
                         file.write(dictionary[key])
                         encoded_text = encoded_text[len(key):]
                         break
